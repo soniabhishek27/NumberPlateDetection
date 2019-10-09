@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="5"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+    <SurfaceView
+        android:id="@+id/TransparentView"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/TransparentView"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="No Text Detected"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+
+            android:layout_below="@+id/text_view"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" >
+
+
+            <Button
+                android:id="@+id/getData"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="0dp"
+                android:layout_weight="2"
+                android:background="@color/colorPrimaryDark"
+                android:padding="10dp"
+                android:text="ScreenShot"
+                android:textColor="#fff" />
+
+            <Button
+                android:id="@+id/exit"
+                android:background="@color/colorPrimaryDark"
+                android:textColor="#fff"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="EXIT"
+                android:layout_weight="2"
+                />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+</RelativeLayout>

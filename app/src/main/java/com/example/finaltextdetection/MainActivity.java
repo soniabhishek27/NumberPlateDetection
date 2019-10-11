@@ -52,8 +52,8 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.text.TextBlock;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     ImageView cropImageView;
     SurfaceHolder holder,holderTransparent;
     Camera camera;
+    Rect rect = new Rect();
+
 
     private float RectLeft, RectTop,RectRight,RectBottom ;
 
@@ -93,11 +95,11 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
         holder.addCallback((SurfaceHolder.Callback) this);
 
-        mCameraView.setSecure(true);
+            mCameraView.setSecure(true);
 
         //second holder
 
-transparentView = (SurfaceView)findViewById(R.id.TransparentView);
+     transparentView = (SurfaceView)findViewById(R.id.TransparentView);
 
 holderTransparent = transparentView.getHolder();
 
@@ -151,17 +153,18 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.WHITE);
-        paint.setStrokeWidth(2);
+        paint.setStrokeWidth(0);
 
-        RectLeft = 4;
 
-        RectTop = 250 ;
+        RectLeft = 80;
+
+        RectTop = 20 ;
 
         RectRight = RectLeft+ deviceWidth-100;
 
         RectBottom =RectTop+ 200;
 
-        Rect rec=new Rect((int) RectLeft,(int)RectTop,(int)RectRight,(int)RectBottom);
+        Rect rec =new Rect((int) RectLeft,(int)RectTop,(int)RectRight,(int)RectBottom);
 
         canvas.drawRect(rec,paint);
 
@@ -187,18 +190,14 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
             return;
 
         }
-
         Camera.Parameters param;
 
         param = camera.getParameters();
+        param.setZoom(param.getMaxZoom());
 
-//        param.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+       param.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
 //        param.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
 //
-
-
-
-
 
         Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 
@@ -218,8 +217,8 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
 
         }
 
-        catch (Exception e) {
 
+        catch (Exception e) {
 
 
             return;
@@ -271,6 +270,7 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
     }
 
     @Override
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if (requestCode != requestPermissionID) {
@@ -283,7 +283,8 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                mCameraSource.start(mCameraView.getHolder());
+                mCameraSource.start(transparentView.getHolder());
+              //  mCameraSource.start(mCameraView.getHolder());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -304,32 +305,28 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
 
     private void startCameraSource() {
 
-        final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext()).build();
+
+        final TextRecognizer textRecognizer = new TextRecognizer.Builder(getApplicationContext())
+                .build();
 
 
 
-        if (!textRecognizer.isOperational()) {
+        if (!textRecognizer.isOperational())
+        {
             Toast.makeText(MainActivity.this, "Try again dependencies not loadded yet", Toast.LENGTH_SHORT).show();
-        } else {
-
-
-            mCameraView.setFocusableInTouchMode(true);
-
-
-
-
-            mCameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
-                    .setAutoFocusEnabled(true)
-                    .setFacing(CameraSource.CAMERA_FACING_BACK)
-                    .setRequestedPreviewSize(1280, 1024)
-                    .setRequestedFps(2.0f)
-                    .build();
-
-
         }
+        else
+            {
+                mCameraSource = new CameraSource.Builder(getApplicationContext(), textRecognizer)
+                        .setAutoFocusEnabled(true)
+
+                        //.setRequestedPreviewSize(RectTop,RectBottom)
+                        .setFacing(CameraSource.CAMERA_FACING_BACK)
+                        .setRequestedFps(30.0f)
+                        .build();
 
 
-
+            }
 
         mCameraView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
@@ -350,13 +347,15 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
                 }
             }
 
-
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
+            {
+
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
+            public void surfaceDestroyed(SurfaceHolder holder)
+            {
                 mCameraSource.stop();
             }
         });
@@ -364,8 +363,8 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
         //Set the text recognizer process
         textRecognizer.setProcessor(new Detector.Processor<TextBlock>() {
             @Override
-            public void release() {
-
+            public void release()
+            {
 
             }
 
@@ -375,40 +374,38 @@ holderTransparent.addCallback((SurfaceHolder.Callback)this);
                 final SparseArray<TextBlock> items = detections.getDetectedItems();
                 if (items.size() != 0) {
 
-//                    mTextView.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            //  String get;
-
-
-                      mTextView.post(new Runnable() {
-                          @Override
-                          public void run() {
-                              StringBuilder stringBuilder= new StringBuilder();
-                              for(int i=0; i < items.size(); i++)
-                              {
-                                  TextBlock item = items.valueAt(i);
-
-                                  stringBuilder.append(item.getValue());
-                                  stringBuilder.append("\n");
-
-                              }
-                              mTextView.setText(stringBuilder.toString());
-
-                          }
-                      });
+                    mTextView.post(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            for (int i = 0; i < items.size(); i++) {
+                                TextBlock item = items.valueAt(i);
+                                stringBuilder.append(item.getValue());
+                                stringBuilder.append("\n");
+                            }
+                            mTextView.setText(stringBuilder.toString());
                         }
-//                 });
-//                }
+                    });
+                }
             }
         });
     }
     public void getdata()
     {
-        String Result= mTextView.getText().toString();
-        Intent intent= new Intent(MainActivity.this,Data.class);
-       intent.putExtra("value",Result);
-       startActivity(intent);
+        try {
+
+            String Result= mTextView.getText().toString();
+            Intent intent= new Intent(MainActivity.this,Data.class);
+            intent.putExtra("value",Result);
+            startActivity(intent);
+
+        }
+        catch (Exception e)
+        {
+
+        }
+
     }
 }
 
